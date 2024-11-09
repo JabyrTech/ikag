@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iknowaguy.com - Luxury Task Marketplace</title>
+    <link rel="stylesheet" href="styless.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">iknowaguy.com</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#tasks">Tasks</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="login-btn">Login</button>
+                <button class="signup-btn">Sign Up</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <h1>Find the right person for any task</h1>
+            <p>Post your task or offer your skills. Connect and get things done.</p>
+            <button id="post-task-btn" class="cta-button" onclick="document.getElementById('modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';">Post a Task</button>
+        </section>
+
+        <section id="tasks" class="task-section">
+            <h2>Recent Tasks</h2>
+            <div class="search-bar">
+                <input type="text" id="task-search" placeholder="Search tasks...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <p style="margin: 2rem 0;"><<i class="fa fa-info" style="color: darkgoldenrod;"></i>> Swipe Left or Right on the card to view next</p>
+            <div class="task-queue">
+                <div class="task-cards-container">
+                    <!-- Task cards will be dynamically added here -->
+                </div>
+                <div class="task-navigation">
+                    
+                    <button id="prev-task" class="nav-btn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
+                    <button id="next-task" class="nav-btn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <button id="view-all-tasks" class="view-all-btn">View All Tasks</button>
+        </section>
+
+        <section id="how-it-works" class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-edit"></i></div>
+                    <h3>Post a Task</h3>
+                    <p>Describe what you need done, when, and your budget.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-users"></i></div>
+                    <h3>Get Offers</h3>
+                    <p>Receive offers from skilled professionals in Nigeria.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Choose & Pay</h3>
+                    <p>Select the best offer and pay securely through our platform.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <h2>Contact Us</h2>
+            <form id="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" required></textarea>
+                <button type="submit" class="submit-button">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>iknowaguy.com connects Nigerians with skilled professionals for all their needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#tasks">Tasks</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 iknowaguy.com. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <nav class="mobile-nav">
+        <a href="#home"><i class="fas fa-home"></i></a>
+        <a href="#tasks"><i class="fas fa-tasks"></i></a>
+        <a onclick="document.getElementById('modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';"><i class="fas fa-plus"></i></a>
+        <a href="#how-it-works"><i class="fas fa-question-circle"></i></a>
+        <a href="#contact"><i class="fas fa-envelope"></i></a>
+    </nav>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Post a New Task</h2>
+            <form id="task-form">
+                <input type="text" id="task-title" placeholder="Task Title" required>
+                <textarea id="task-description" placeholder="Describe your task..." required></textarea>
+                <input type="number" id="task-budget" placeholder="Budget (in Naira)" required>
+                <select id="task-location" required>
+                    <option value="">Select Location</option>
+                    <option value="Lagos">Lagos</option>
+                    <option value="Abuja">Abuja</option>
+                    <option value="Port Harcourt">Port Harcourt</option>
+                    <option value="Kano">Kano</option>
+                    <option value="Ibadan">Ibadan</option>
+                </select>
+                <button type="submit" class="submit-button">Submit Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="scriptss.js"></script>
+</body>
+</html>
