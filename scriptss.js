@@ -293,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     addTask('Logo Design', 'Create a logo for a new eco-friendly product line', 150000, 'Kano', 'design');
     addTask('E-commerce Website', 'Build an e-commerce platform for handmade crafts', 1500000, 'Ibadan', 'development');
     addTask('Video Editing', 'Edit promotional videos for a tourism company', 250000, 'Lagos', 'design');
-    addTask('SEO Optimization', 'Improve search engine rankings for a local business', 400000, 'Abuja', 'marketing');
-    addTask('Technical Writing', 'Create user manuals for a new software product', 200000, 'Port Harcourt', 'writing');
-    addTask('UI/UX Design', 'Design user interface for a fintech app', 800000, 'Lagos', 'design');
+    addTask('Washing Clothes', 'Abeg help me wash clothes, 10 sets only', 30000, 'Baze', 'work');
+    addTask('Level 200 Maths', 'Mathematics guru needed to do my assignment 😞 ASAP by tuesday', 2000, 'Nile', 'assignment');
+    addTask('Cook needed', 'I need someone to be cooking for me, i have the food stuff, he will just cook', 1000, 'Al-Hikmah', 'work');
 
     // Initial render
     renderTasks();
