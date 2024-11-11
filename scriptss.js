@@ -9,14 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewAllTasksBtn = document.getElementById('view-all-tasks');
     const searchInput = document.getElementById('task-search');
     const searchBtn = document.getElementById('search-btn');
+    const taskTags = document.querySelectorAll('.task-tag');
     const undoBtn = document.createElement('button');
     undoBtn.classList.add('undo-btn');
     undoBtn.innerHTML = '<i class="fas fa-undo"></i>';
     document.body.appendChild(undoBtn);
 
-    let currentTaskIndex = 0;
-    let tasks = [];
+    let allTasks = [];
+    let filteredTasks = [];
     let swipedTasks = [];
+    let currentPage = 1;
+    const tasksPerPage = 10;
 
     // Open modal
     postTaskBtn.onclick = () => {
@@ -45,34 +48,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const description = document.getElementById('task-description').value;
         const budget = document.getElementById('task-budget').value;
         const location = document.getElementById('task-location').value;
-        addTask(title, description, budget, location);
+        addTask(title, description, budget, location, 'other'); // Default category
         taskForm.reset();
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
-    // Add task to the list
-    function addTask(title, description, budget, location) {
+    // Function to add a task
+    function addTask(title, description, budget, location, category) {
         const task = {
             id: Date.now(),
             title,
             description,
             budget: parseInt(budget),
             location,
+            category,
             user: {
                 name: 'John Doe',
                 avatar: 'https://jabyrtech.github.io/new/assets/static/jabyr2.jpg'
             }
         };
-        tasks.unshift(task);
+        allTasks.unshift(task);
+        filteredTasks = allTasks;
         renderTasks();
     }
 
     // Render tasks
     function renderTasks() {
         taskContainer.innerHTML = '';
-        const visibleTasks = tasks.slice(currentTaskIndex, currentTaskIndex + 10);
-        visibleTasks.forEach((task, index) => {
+        const startIndex = (currentPage - 1) * tasksPerPage;
+        const endIndex = startIndex + tasksPerPage;
+        const tasksToRender = filteredTasks.slice(startIndex, endIndex);
+
+        tasksToRender.forEach((task, index) => {
             const taskCard = document.createElement('div');
             taskCard.className = 'task-card';
             taskCard.style.zIndex = 10 - index;
@@ -85,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>${task.description}</p>
                 <p class="task-budget">Budget: ₦${task.budget.toLocaleString()}</p>
                 <p><strong>Location:</strong> ${task.location}</p>
+                <button class="i-am-a-guy-btn">I am a guy</button>
             `;
             taskContainer.appendChild(taskCard);
 
@@ -112,13 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (distX > 0) {
                         taskCard.classList.add('swipe-right');
                         setTimeout(() => {
-                            swipedTasks.push(tasks.splice(currentTaskIndex + index, 1)[0]);
+                            swipedTasks.push(filteredTasks.splice(startIndex + index, 1)[0]);
                             renderTasks();
                         }, 300);
                     } else {
                         taskCard.classList.add('swipe-left');
                         setTimeout(() => {
-                            tasks.splice(currentTaskIndex + index, 1);
+                            filteredTasks.splice(startIndex + index, 1);
                             renderTasks();
                         }, 300);
                     }
@@ -130,38 +139,119 @@ document.addEventListener('DOMContentLoaded', () => {
                 distY = null;
             }, false);
         });
+
+        updateNavigationButtons();
+    }
+
+    // Update navigation buttons
+    function updateNavigationButtons() {
+        prevTaskBtn.style.display = currentPage > 1 ? 'block' : 'none';
+        nextTaskBtn.style.display = currentPage < Math.ceil(filteredTasks.length / tasksPerPage) ? 'block' : 'none';
     }
 
     // Navigation buttons
     prevTaskBtn.onclick = () => {
-        if (currentTaskIndex > 0) {
-            currentTaskIndex -= 10;
+        if (currentPage > 1) {
+            currentPage--;
             renderTasks();
         }
     }
 
     nextTaskBtn.onclick = () => {
-        if (currentTaskIndex + 10 < tasks.length) {
-            currentTaskIndex += 10;
+        if (currentPage < Math.ceil(filteredTasks.length / tasksPerPage)) {
+            currentPage++;
             renderTasks();
         }
     }
 
     // View all tasks
     viewAllTasksBtn.onclick = () => {
-        // Implement view all tasks functionality
-        alert('View all tasks functionality to be implemented');
+        filteredTasks = allTasks;
+        currentPage = 1;
+        renderTasks();
+        taskTags.forEach(t => t.classList.remove('active'));
+        document.querySelector('.task-tag[data-category="all"]').classList.add('active');
     }
+
+    const allTasksModal = document.getElementById('all-tasks-modal');
+    const allTasksContainer = document.querySelector('.all-tasks-container');
+    const modalSearchInput = document.getElementById('modal-task-search');
+    const modalSearchBtn = document.getElementById('modal-search-btn');
+    const modalTaskTags = document.querySelectorAll('.modal-task-tag');
+
+    // View all tasks
+    viewAllTasksBtn.onclick = () => {
+        allTasksModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        renderAllTasks(allTasks);
+    }
+
+    // Close all tasks modal
+    allTasksModal.querySelector('.close').onclick = () => {
+        allTasksModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Render all tasks in the modal
+    function renderAllTasks(tasks) {
+        allTasksContainer.innerHTML = '';
+        tasks.forEach(task => {
+            const taskCard = document.createElement('div');
+            taskCard.className = 'modal-task-card';
+            taskCard.innerHTML = `
+                <h3>${task.title}</h3>
+                <p>${task.description}</p>
+                <p class="task-budget">Budget: ₦${task.budget.toLocaleString()}</p>
+                <p><strong>Location:</strong> ${task.location}</p>
+                <button class="i-am-a-guy-btn">I am a guy</button>
+            `;
+            allTasksContainer.appendChild(taskCard);
+
+            // Add event listener for "I am a guy" button
+            const iAmAGuyBtn = taskCard.querySelector('.i-am-a-guy-btn');
+            iAmAGuyBtn.addEventListener('click', () => {
+                alert(`You've expressed interest in the task: ${task.title}`);
+                // Here you would typically send this data to a server
+            });
+        });
+    }
+
+    // Modal search functionality
+    modalSearchBtn.onclick = () => {
+        const searchTerm = modalSearchInput.value.toLowerCase();
+        const filteredTasks = allTasks.filter(task => 
+            task.title.toLowerCase().includes(searchTerm) || 
+            task.description.toLowerCase().includes(searchTerm)
+        );
+        renderAllTasks(filteredTasks);
+    }
+
+    // Modal task tags functionality
+    modalTaskTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            const category = tag.dataset.category;
+            modalTaskTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+
+            let filteredTasks;
+            if (category === 'all') {
+                filteredTasks = allTasks;
+            } else {
+                filteredTasks = allTasks.filter(task => task.category === category);
+            }
+            renderAllTasks(filteredTasks);
+        });
+    });
+
 
     // Search functionality
     searchBtn.onclick = () => {
         const searchTerm = searchInput.value.toLowerCase();
-        const filteredTasks = tasks.filter(task => 
+        filteredTasks = allTasks.filter(task => 
             task.title.toLowerCase().includes(searchTerm) || 
             task.description.toLowerCase().includes(searchTerm)
         );
-        tasks = filteredTasks;
-        currentTaskIndex = 0;
+        currentPage = 1;
         renderTasks();
     }
 
@@ -169,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     undoBtn.onclick = () => {
         if (swipedTasks.length > 0) {
             const lastSwipedTask = swipedTasks.pop();
-            tasks.unshift(lastSwipedTask);
+            filteredTasks.unshift(lastSwipedTask);
             renderTasks();
         }
         if (swipedTasks.length === 0) {
@@ -177,18 +267,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Add some sample tasks
-    
-    addTask('Event Planning for Royal Gala', 'Looking for an experienced event planner to organize a royal gala for international dignitaries.', 500000000, 'Abuja');
-    addTask('Private Jet Interior Design', 'Seeking a world-class designer to renovate the interior of my private jet.', 2000000000, 'Port Harcourt');
-    addTask('Yacht Party Catering', 'Need a Michelin-star chef to cater an exclusive yacht party for 100 VIP guests.', 300000000, 'Lagos');
-    addTask('Personal Stylist for Celebrity', 'Looking for a top-tier stylist to curate a wardrobe for my upcoming world tour.', 150000000, 'Lagos');
-    addTask('Luxury Car Customization', 'Need an expert to customize my fleet of luxury cars with gold plating and diamond accents.', 5000000000, 'Abuja');
-    addTask('Private Island Development', 'Seeking a visionary architect to design and develop my private island resort.', 10000000000, 'Lagos');
-    addTask('Rare Art Collection Curator', 'Looking for an experienced curator to manage and expand my rare art collection.', 500000000, 'Abuja');
-    addTask('Chef Needed', 'I need someone that will be cooking for me, I have the food stuff, he just has to cook, i can pay him with money or with food', 'Negotiable', 'Al-Hikmah');
-    addTask('Laundary Service', 'I need a guy to help me wash my clothes please, 10 sets only', 2000, 'Al-Hikmah');
-    addTask('Mathematics Assignment', 'Need someone that can do maths assignment for me and give me by Sunday.', 2000, 'Al-Hikmah');
+    // Event listener for task tags
+    taskTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            const category = tag.dataset.category;
+            taskTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+
+            if (category === 'all') {
+                filteredTasks = allTasks;
+            } else {
+                filteredTasks = allTasks.filter(task => task.category === category);
+            }
+
+            currentPage = 1;
+            renderTasks();
+        });
+    });
+
+    // Add sample tasks
+    addTask('Website Design for Luxury Brand', 'Need a professional to design a high-end website for my luxury fashion brand.', 1000000000, 'Lagos', 'design');
+    addTask('Mobile App Development', 'Develop a food delivery app for Android and iOS', 2000000, 'Abuja', 'development');
+    addTask('Content Writing', 'Write 10 blog posts about Nigerian cuisine', 100000, 'Port Harcourt', 'writing');
+    addTask('Social Media Marketing', 'Manage social media accounts for a fashion brand', 300000, 'Lagos', 'marketing');
+    addTask('Logo Design', 'Create a logo for a new eco-friendly product line', 150000, 'Kano', 'design');
+    addTask('E-commerce Website', 'Build an e-commerce platform for handmade crafts', 1500000, 'Ibadan', 'development');
+    addTask('Video Editing', 'Edit promotional videos for a tourism company', 250000, 'Lagos', 'design');
+    addTask('SEO Optimization', 'Improve search engine rankings for a local business', 400000, 'Abuja', 'marketing');
+    addTask('Technical Writing', 'Create user manuals for a new software product', 200000, 'Port Harcourt', 'writing');
+    addTask('UI/UX Design', 'Design user interface for a fintech app', 800000, 'Lagos', 'design');
 
     // Initial render
     renderTasks();
@@ -243,53 +350,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Add floating animation to CTA button
+    const ctaButton = document.querySelector('.cta-button');
+    setInterval(() => {
+        ctaButton.classList.toggle('animate-bounce');
+    }, 2000);
+
     // Add spin animation to step icons
-});
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('modal');
-    const postTaskBtn = document.getElementById('post-task-btn');
-    const closeBtn = document.getElementsByClassName('close')[0];
-    const taskForm = document.getElementById('task-form');
-
-    // Open modal
-    postTaskBtn.onclick = () => {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-    }
-
-    // Close modal
-    closeBtn.onclick = () => {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
-    }
-
-    // Close modal when clicking outside
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-        }
-    }
-
-    // Handle task submission
-    taskForm.onsubmit = (e) => {
-        e.preventDefault();
-        const title = document.getElementById('task-title').value;
-        const description = document.getElementById('task-description').value;
-        const budget = document.getElementById('task-budget').value;
-        const location = document.getElementById('task-location').value;
-        
-        // Here you would typically send this data to a server
-        console.log('Task submitted:', { title, description, budget, location });
-        
-        // Clear the form and close the modal
-        taskForm.reset();
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
-    }
+    const stepIcons = document.querySelectorAll('.step-icon');
+    stepIcons.forEach(icon => {
+        icon.classList.add('animate-spin');
+    });
 });
