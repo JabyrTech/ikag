@@ -36,22 +36,55 @@
         <section id="tasks" class="task-section">
             <h2>Recent Tasks</h2>
             <div class="search-bar">
-                <input type="text" id="task-search" placeholder="Search tasks...">
+                <input type="text" id="task-search" placeholder="Search tasks..." style="margin-bottom: 0;">
                 <button id="search-btn"><i class="fas fa-search"></i></button>
             </div>
-            <p style="margin: 2rem 0;"><<i class="fa fa-info" style="color: darkgoldenrod;"></i>> Swipe Left or Right on the card to view next</p>
+            <div class="task-tags">
+                <button class="modal-task-tag" data-category="all">All</button>
+                        <button class="task-tag" data-category="assignment">Assignment</button>
+                        <button class="task-tag" data-category="work">work</button>
+                        <button class="task-tag" data-category="design">Design</button>
+                        <button class="task-tag" data-category="development">Development</button>
+                        <button class="task-tag" data-category="marketing">Marketing</button>
+                        <button class="task-tag" data-category="writing">Writing</button>
+            </div>
+            <p style="margin: 2rem 0;"><i class="fa fa-info" style="color: darkgoldenrod;"></i> Swipe Left or Right on the card to view next</p>
             <div class="task-queue">
                 <div class="task-cards-container">
                     <!-- Task cards will be dynamically added here -->
                 </div>
                 <div class="task-navigation">
-                    
                     <button id="prev-task" class="nav-btn" style="display: none;"><i class="fas fa-chevron-left"></i></button>
                     <button id="next-task" class="nav-btn" style="display: none;"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
             <button id="view-all-tasks" class="view-all-btn">View All Tasks</button>
+
+            <div id="all-tasks-modal" class="modal">
+                <div class="modal-content all-tasks-content">
+                    <span class="close">&times;</span>
+                    <h2>All Tasks</h2>
+                    <div class="modal-search-bar">
+                        <input type="text" id="modal-task-search" placeholder="Search tasks...">
+                        <button id="modal-search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="modal-task-tags">
+                        <button class="modal-task-tag" data-category="all">All</button>
+                        <button class="modal-task-tag" data-category="assignment">Assignment</button>
+                        <button class="modal-task-tag" data-category="work">work</button>
+                        <button class="modal-task-tag" data-category="design">Design</button>
+                        <button class="modal-task-tag" data-category="development">Development</button>
+                        <button class="modal-task-tag" data-category="marketing">Marketing</button>
+                        <button class="modal-task-tag" data-category="writing">Writing</button>
+                    </div>
+                    <div class="all-tasks-container">
+                        <!-- Tasks will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+            
         </section>
+        
 
         <section id="how-it-works" class="how-it-works">
             <h2>How It Works</h2>
@@ -134,11 +167,20 @@
                 <input type="number" id="task-budget" placeholder="Budget (in Naira)" required>
                 <select id="task-location" required>
                     <option value="">Select Location</option>
-                    <option value="Lagos">Lagos</option>
-                    <option value="Abuja">Abuja</option>
-                    <option value="Port Harcourt">Port Harcourt</option>
-                    <option value="Kano">Kano</option>
-                    <option value="Ibadan">Ibadan</option>
+                    <option value="Al-Hikmah">Al-Hikamah</option>
+                    <option value="MAAUN">MAAUN</option>
+                    <option value="Nile">Nile</option>
+                    <option value="Baze">Baze</option>
+                    <option value="Covenant">Covenant</option>
+                </select>
+                <select id="task-tag" required>
+                    <option value="">Select type of taks</option>
+                    <option value="assignment">Assignment</option>
+                    <option value="work">Work</option>
+                    <option value="design">Design</option>
+                    <option value="development">Development</option>
+                    <option value="writing">Writing</option>
+                    <option value="marketing">Marketing</option>
                 </select>
                 <button type="submit" class="submit-button">Submit Task</button>
             </form>
